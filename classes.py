@@ -1,3 +1,5 @@
+from collections import UserDict
+
 class UserDict:
     pass
 
