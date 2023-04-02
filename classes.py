@@ -29,8 +29,8 @@ class Record:
         self.name = name
         self.phone = [] if phone is None else [phone]
         
-    def add_phone(self, phone):
-        self.phones.append(Phone(phone))
+    def add_phone(self, phone:Phone):
+        self.phones.append(phone)
         
     def del_phone(self, phone):
         self.phones.remove(phone)
