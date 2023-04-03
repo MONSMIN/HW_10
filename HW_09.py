@@ -12,9 +12,9 @@ def input_error(func):
         except IndexError:
             return "Not enough params. Print help"
         except KeyError:
-            return 'Contact  not found, try again or use help'
+            return 'Contact not found, try again or use help'
         except AttributeError:
-            return 'Contact  not found, try again or use help'
+            return 'Not enough params. Print help'
     return inner
 
 
@@ -23,7 +23,7 @@ def add(*args):
     list_of_param = args[0].split()
     name = list_of_param[0]
     phone_number = [Phone(phone) for phone in list_of_param[1:]]
-    record = Record(name, phone_number)
+    record = Record(Name(name), phone_number)
     contacts.add_record(record)
     if not phone_number:
         raise IndexError()
@@ -31,10 +31,19 @@ def add(*args):
     return f'{name}, phone number {phone_number[0]}'
 
 
-def show_all(*args):
+def show_all(*args, contacts=contacts):
     if not contacts.data:
-        return 'Not contacts'
-    return '\n'.join(f'{k}: {", ".join(str(phone) for phone in v.phone)}' for k, v in contacts.data.items())
+        return 'No contacts'
+    
+    contact_list = []
+    for name, record in contacts.data.items():
+        phones = ", ".join(str(phone) for phone in record.phone)
+        if not phones:
+            contact_list.append(name)
+        else:
+            contact_list.append(f"{name} {phones}")
+    
+    return "\n".join(contact_list)
 
 
 @input_error
@@ -51,9 +60,13 @@ def change(*args):
     list_of_param = args[0].split()
     name = Name(list_of_param[0])
     phone_number = [Phone(phone) for phone in list_of_param[1:]]
-    if contacts.get(name.value):
-        contacts.data[name.value].phone = phone_number
-        return f'Contact {name.value} update {str(phone_number[0])}'
+    record = contacts.get(name.value)
+    if not record:
+        raise KeyError
+    if not phone_number:
+        raise AttributeError
+    record.phone = phone_number
+    return f'Contact {name.value} updated {str(phone_number[0])}'
 
 
 def exit(*args):
@@ -86,7 +99,6 @@ def command_handler(text):
         if text.startswith(kword):
             return command, text.replace(kword, '').strip()
     return no_command, None
-
 
 def main():
     print('Hello user!')

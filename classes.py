@@ -27,18 +27,18 @@ class Phone(Field):
 class Record:
     def __init__(self, name, phone=None):
         self.name = name
-        self.phone = [] if phone is None else [phone]
+        self.phone = phone if phone is not None else []
         
     def add_phone(self, phone:Phone):
-        self.phones.append(phone)
+        self.phone.append(phone)
         
     def del_phone(self, phone):
-        self.phones.remove(phone)
+        self.phone.remove(phone)
         
     def edit_phone(self, old_phone, new_phone):
-        index = self.phones.index(old_phone)
-        self.phones[index] = new_phone
+        index = self.phone.index(old_phone)
+        self.phone[index] = new_phone
         
 class AddressBook(UserDict):
     def add_record(self, record):
-        self.data[record.name] = record
+        self.data[record.name.value] = record
